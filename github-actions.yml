@@ -1,0 +1,29 @@
+name: Run Tests + Upload Coverage
+
+on:
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2      # <--------- This part is very important (fetch-depth must be 2)
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+          php-version: 8.2
+          coverage: pcov
+    - name: Install Dependencies
+      run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
+    - name: Run tests
+      run: php -d pcov.enabled=1 vendor/bin/phpunit --coverage-clover=build/logs/clover.xml tests
+      
+# This is where the upload script goes  #
+
+    - name: Upload Coverage
+      env:
+        OTTERWISE_TOKEN: ${{ secrets.OTTERWISE_TOKEN }}
+      run: bash <(curl -s https://raw.githubusercontent.com/getOtterWise/bash-uploader/main/uploader.sh)
