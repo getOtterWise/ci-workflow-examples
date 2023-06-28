@@ -1,0 +1,22 @@
+version: 1
+
+environment:
+  php: 8.1
+  node: 16
+
+services:
+  - mysql: 5.7
+
+pipeline:
+  - name: Setup
+    cmd: |
+      composer install --no-interaction --prefer-dist --optimize-autoloader
+      
+  - name: Enable Pcov
+    cmd: sudo phpenmod pcov
+
+  - name: Run Tests
+    cmd: php vendor/bin/phpunit --coverage-clover=build/logs/clover.xml tests
+    
+  - name: Upload Coverage
+    cmd: bash <(curl -s https://raw.githubusercontent.com/getOtterWise/bash-uploader/main/uploader.sh) --repo-token $OTTERWISE_TOKEN
