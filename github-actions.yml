@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 2      # <--------- This part is very important (fetch-depth must be 2)
+        fetch-depth: 2      # <--------- This part is very important (fetch-depth must be 2, or deeper)
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
