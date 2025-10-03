@@ -18,9 +18,10 @@ jobs:
           coverage: pcov
     - name: Install Dependencies
       run: composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
+
     - name: Run tests
       run: php -d pcov.enabled=1 vendor/bin/phpunit --coverage-clover=build/logs/clover.xml tests
-    - name: Upload Coverage
-      env:
-        OTTERWISE_TOKEN: ${{ secrets.OTTERWISE_TOKEN }}
-      run: bash <(curl -s https://raw.githubusercontent.com/getOtterWise/bash-uploader/main/uploader.sh)
+
+    - uses: getOtterWise/github-action@v1
+      with:
+        token: ${{ secrets.OTTERWISE_TOKEN }}
